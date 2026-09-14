@@ -10,11 +10,13 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.Reader;
-import java.io.Writer;
 import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +41,9 @@ public final class App {
     static final int EXIT_USAGE_ERROR = 1;
     static final int EXIT_DATA_ERROR = 2;
 
+    /** Maximum positional arguments this CLI accepts: an input path and an output path. */
+    private static final int MAX_ARGS = 2;
+
     /** JVM entry point; delegates to {@link #run} and exits non-zero on failure. */
     public static void main(String[] args) {
         int exitCode = run(args, System.in, System.out, System.err);
@@ -48,14 +53,14 @@ public final class App {
     }
 
     /** Runs the CLI against the given streams; package-visible so tests can call it directly. */
-    static int run(String[] args, java.io.InputStream stdin, java.io.PrintStream stdout, java.io.PrintStream stderr) {
-        if (args.length > 2) {
+    static int run(String[] args, InputStream stdin, PrintStream stdout, PrintStream stderr) {
+        if (args.length > MAX_ARGS) {
             printUsage(stderr);
             return EXIT_USAGE_ERROR;
         }
 
         Path inputPath = args.length >= 1 ? Path.of(args[0]) : null;
-        Path outputPath = args.length == 2 ? Path.of(args[1]) : null;
+        Path outputPath = args.length == MAX_ARGS ? Path.of(args[1]) : null;
 
         if (inputPath != null && !Files.isReadable(inputPath)) {
             stderr.println("Cannot read input file: " + inputPath);
@@ -81,7 +86,7 @@ public final class App {
     }
 
     /** Opens the match-results source: {@code stdin} if no input path was given, otherwise the file. */
-    private static Reader openReader(Path inputPath, java.io.InputStream stdin) throws IOException {
+    private static Reader openReader(Path inputPath, InputStream stdin) throws IOException {
         if (inputPath == null) {
             return new InputStreamReader(stdin, StandardCharsets.UTF_8);
         }
@@ -89,7 +94,7 @@ public final class App {
     }
 
     /** Opens the table destination: {@code stdout} if no output path was given, otherwise the file. */
-    private static Writer openWriter(Path outputPath, java.io.PrintStream stdout) throws IOException {
+    private static Writer openWriter(Path outputPath, PrintStream stdout) throws IOException {
         if (outputPath == null) {
             return new OutputStreamWriter(stdout, StandardCharsets.UTF_8);
         }
@@ -97,7 +102,7 @@ public final class App {
     }
 
     /** Prints the usage message shown when the CLI is called with too many arguments. */
-    private static void printUsage(java.io.PrintStream out) {
+    private static void printUsage(PrintStream out) {
         out.println("Usage: league-table [input.csv] [output.csv]");
         out.println("  No arguments:        read match results CSV from stdin, write table CSV to stdout");
         out.println("  One argument:        read match results CSV from the given file, write table CSV to stdout");
