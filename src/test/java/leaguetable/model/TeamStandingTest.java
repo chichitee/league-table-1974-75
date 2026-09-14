@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/** Tests for {@link TeamStanding}'s accumulation logic, goal average, and immutability. */
 class TeamStandingTest {
 
     @Test
@@ -50,6 +51,7 @@ class TeamStandingTest {
         assertEquals(0, standing.points());
     }
 
+    /** Confirms played/won/drawn/lost and goal totals all accumulate correctly across several results, not just one. */
     @Test
     void accumulatesMultipleResults() {
         TeamStanding standing = TeamStanding.unplayed("Ipswich Town")
@@ -72,18 +74,21 @@ class TeamStandingTest {
         assertEquals(3.0, standing.goalAverage(), 0.0001);
     }
 
+    /** The documented edge case: goals scored with none conceded is treated as infinite, not a divide-by-zero error. */
     @Test
     void goalAverageIsInfiniteWhenNoGoalsConcededButGoalsScored() {
         TeamStanding standing = TeamStanding.unplayed("Carlisle United").withResult(2, 0, 2);
         assertEquals(Double.POSITIVE_INFINITY, standing.goalAverage());
     }
 
+    /** The other documented edge case: 0 for and 0 against is a neutral 0.0, not infinite or NaN. */
     @Test
     void goalAverageIsZeroWhenNoGoalsAtAll() {
         TeamStanding standing = TeamStanding.unplayed("Everton").withResult(0, 0, 1);
         assertEquals(0.0, standing.goalAverage());
     }
 
+    /** Proves {@code withResult} returns a new instance rather than mutating the original. */
     @Test
     void originalStandingIsUnaffectedByWithResult() {
         TeamStanding original = TeamStanding.unplayed("Arsenal");
