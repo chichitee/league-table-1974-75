@@ -28,8 +28,13 @@ public final class CsvMatchReader {
 
     private static final String EXPECTED_HEADER = "date,hometeam,awayteam,homegoals,awaygoals";
 
+    /**
+     * Reads match results from the given Reader, returning a list of Match objects.
+     *
+     * @throws CsvParseException    if the header is missing/wrong, or a line can't be parsed
+     * @throws UncheckedIOException if an I/O error occurs while reading
+     */
     public List<Match> read(Reader reader) {
-        // Reads match results from the given Reader, returning a list of Match objects. Throws CsvParseException on any parsing error.
         List<Match> matches = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(reader)) {
             String line;
@@ -61,8 +66,8 @@ public final class CsvMatchReader {
         return matches;
     }
 
+    /** Validates that the header line matches the expected format. */
     private void validateHeader(String line, int lineNumber) {
-        // Validates that the header line matches the expected format. Throws CsvParseException if it does not.
         String normalised = line.strip().toLowerCase(Locale.ROOT).replace(" ", "");
         if (!normalised.equals(EXPECTED_HEADER)) {
             throw new CsvParseException(lineNumber, line,
@@ -70,8 +75,8 @@ public final class CsvMatchReader {
         }
     }
 
+    /** Parses a single line of match data into a {@link Match}. */
     private Match parseMatchLine(String line, int lineNumber) {
-        // Parses a single line of match data into a Match object. Throws CsvParseException on any parsing error.
         List<String> fields = CsvLine.split(line);
         if (fields.size() != 5) {
             throw new CsvParseException(lineNumber, line,
@@ -100,8 +105,8 @@ public final class CsvMatchReader {
         }
     }
 
+    /** Parses a goals field as a whole number; {@code label} names it in the error message. */
     private int parseGoals(String raw, int lineNumber, String line, String label) {
-        // Parses a goals field into an integer. Throws CsvParseException if the value is not a valid integer.
         try {
             return Integer.parseInt(raw.strip());
         } catch (NumberFormatException e) {

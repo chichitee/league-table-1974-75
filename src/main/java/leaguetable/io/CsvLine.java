@@ -14,8 +14,8 @@ final class CsvLine {
     private CsvLine() {
     }
 
+    /** Splits a CSV line into fields, handling quoted fields and escaped quotes. */
     static List<String> split(String line) {
-        // Splits a CSV line into fields, handling quoted fields and escaped quotes. Returns a list of field values.
         List<String> fields = new ArrayList<>();
         StringBuilder current = new StringBuilder();
         boolean inQuotes = false;

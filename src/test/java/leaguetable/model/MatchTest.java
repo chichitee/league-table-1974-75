@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/** Tests for {@link Match}'s validation and outcome-classification logic. */
 class MatchTest {
 
     private static final LocalDate DATE = LocalDate.of(1974, 8, 17);
@@ -61,6 +62,7 @@ class MatchTest {
                 () -> new Match(DATE, null, "Chelsea", 1, 0));
     }
 
+    /** The comparison is case-insensitive and ignores whitespace, not just an exact string match. */
     @Test
     void rejectsATeamPlayingItself() {
         assertThrows(IllegalArgumentException.class,

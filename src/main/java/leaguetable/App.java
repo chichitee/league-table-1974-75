@@ -39,6 +39,7 @@ public final class App {
     static final int EXIT_USAGE_ERROR = 1;
     static final int EXIT_DATA_ERROR = 2;
 
+    /** JVM entry point; delegates to {@link #run} and exits non-zero on failure. */
     public static void main(String[] args) {
         int exitCode = run(args, System.in, System.out, System.err);
         if (exitCode != EXIT_OK) {
@@ -46,11 +47,7 @@ public final class App {
         }
     }
 
-    /**
-     * Runs the CLI against the given streams. Package-visible and side-effect
-     * free with respect to {@code System.exit} so it can be exercised
-     * end-to-end from tests.
-     */
+    /** Runs the CLI against the given streams; package-visible so tests can call it directly. */
     static int run(String[] args, java.io.InputStream stdin, java.io.PrintStream stdout, java.io.PrintStream stderr) {
         if (args.length > 2) {
             printUsage(stderr);
@@ -83,24 +80,24 @@ public final class App {
         }
     }
 
+    /** Opens the match-results source: {@code stdin} if no input path was given, otherwise the file. */
     private static Reader openReader(Path inputPath, java.io.InputStream stdin) throws IOException {
-        // If no input path is provided, read from stdin; otherwise, read from the specified file.
         if (inputPath == null) {
             return new InputStreamReader(stdin, StandardCharsets.UTF_8);
         }
         return new FileReader(inputPath.toFile(), StandardCharsets.UTF_8);
     }
 
+    /** Opens the table destination: {@code stdout} if no output path was given, otherwise the file. */
     private static Writer openWriter(Path outputPath, java.io.PrintStream stdout) throws IOException {
-        // If no output path is provided, write to stdout; otherwise, write to the specified file.
         if (outputPath == null) {
             return new OutputStreamWriter(stdout, StandardCharsets.UTF_8);
         }
         return new BufferedWriter(new FileWriter(outputPath.toFile(), StandardCharsets.UTF_8));
     }
 
+    /** Prints the usage message shown when the CLI is called with too many arguments. */
     private static void printUsage(java.io.PrintStream out) {
-        // Print usage instructions to the provided PrintStream.
         out.println("Usage: league-table [input.csv] [output.csv]");
         out.println("  No arguments:        read match results CSV from stdin, write table CSV to stdout");
         out.println("  One argument:        read match results CSV from the given file, write table CSV to stdout");

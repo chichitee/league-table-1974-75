@@ -7,10 +7,13 @@ package leaguetable.service;
  */
 public interface ScoringRules {
 
+    /** Points awarded to a team for winning a match. */
     int pointsForWin();
 
+    /** Points awarded to each team for a drawn match. */
     int pointsForDraw();
 
+    /** Points awarded to a team for losing a match (historically always zero, but kept explicit). */
     int pointsForLoss();
 
     /**
@@ -37,8 +40,8 @@ public interface ScoringRules {
         };
     }
 
+    /** The modern (post-1981) three-points-for-a-win rule, kept for completeness/tests. */
     static ScoringRules threePointsForWin() {
-        // The modern (post-1981) three-points-for-a-win rule, kept for completeness/tests.
         return new ScoringRules() {
             @Override
             public int pointsForWin() {

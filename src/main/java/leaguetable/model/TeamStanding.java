@@ -67,43 +67,43 @@ public final class TeamStanding {
                 points + pointsEarned);
     }
 
+    /** The name of the team. */
     public String team() {
-        // The name of the team.
         return team;
     }
 
+    /** The number of matches played. */
     public int played() {
-        // The number of matches played.
         return played;
     }
 
+    /** The number of matches won. */
     public int won() {
-        // The number of matches won.
         return won;
     }
 
+    /** The number of matches drawn. */
     public int drawn() {
-        // The number of matches drawn.
         return drawn;
     }
 
+    /** The number of matches lost. */
     public int lost() {
-        // The number of matches lost.
         return lost;
     }
 
+    /** The number of goals scored by the team. */
     public int goalsFor() {
-        // The number of goals scored by the team.
         return goalsFor;
     }
 
+    /** The number of goals conceded by the team. */
     public int goalsAgainst() {
-        // The number of goals conceded by the team.
         return goalsAgainst;
     }
 
+    /** The number of points earned by the team. */
     public int points() {
-        // The number of points earned by the team.
         return points;
     }
 
@@ -124,9 +124,9 @@ public final class TeamStanding {
         return (double) goalsFor / goalsAgainst;
     }
 
+    /** e.g. {@code "Leeds United [P10 W9 D1 L0 GF26 GA6 Pts19]"}. */
     @Override
     public String toString() {
-        // Returns a string representation of this team standing in the format "Team [P# W# D# L# GF# GA# Pts#]".
         return String.format("%s [P%d W%d D%d L%d GF%d GA%d Pts%d]",
                 team, played, won, drawn, lost, goalsFor, goalsAgainst, points);
     }
