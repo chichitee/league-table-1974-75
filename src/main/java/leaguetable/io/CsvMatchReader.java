@@ -26,7 +26,13 @@ import java.util.Locale;
  */
 public final class CsvMatchReader {
 
-    private static final String EXPECTED_HEADER = "date,hometeam,awayteam,homegoals,awaygoals";
+    /** The single source of truth for the expected column layout; everything else below is derived from it. */
+    private static final String EXPECTED_HEADER_DISPLAY = "Date,HomeTeam,AwayTeam,HomeGoals,AwayGoals";
+
+    private static final String EXPECTED_HEADER =
+            EXPECTED_HEADER_DISPLAY.toLowerCase(Locale.ROOT).replace(" ", "");
+
+    private static final int EXPECTED_FIELD_COUNT = EXPECTED_HEADER_DISPLAY.split(",").length;
 
     /**
      * Reads match results from the given Reader, returning a list of Match objects.
@@ -58,7 +64,7 @@ public final class CsvMatchReader {
 
             if (!headerSeen) {
                 throw new CsvParseException(0, "", "Input is empty; expected a header row: "
-                        + "Date,HomeTeam,AwayTeam,HomeGoals,AwayGoals");
+                        + EXPECTED_HEADER_DISPLAY);
             }
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to read match results", e);
@@ -71,17 +77,17 @@ public final class CsvMatchReader {
         String normalised = line.strip().toLowerCase(Locale.ROOT).replace(" ", "");
         if (!normalised.equals(EXPECTED_HEADER)) {
             throw new CsvParseException(lineNumber, line,
-                    "Expected header 'Date,HomeTeam,AwayTeam,HomeGoals,AwayGoals'");
+                    "Expected header '" + EXPECTED_HEADER_DISPLAY + "'");
         }
     }
 
     /** Parses a single line of match data into a {@link Match}. */
     private Match parseMatchLine(String line, int lineNumber) {
         List<String> fields = CsvLine.split(line);
-        if (fields.size() != 5) {
+        if (fields.size() != EXPECTED_FIELD_COUNT) {
             throw new CsvParseException(lineNumber, line,
-                    "Expected 5 fields (Date,HomeTeam,AwayTeam,HomeGoals,AwayGoals) but found "
-                            + fields.size());
+                    "Expected " + EXPECTED_FIELD_COUNT + " fields (" + EXPECTED_HEADER_DISPLAY
+                            + ") but found " + fields.size());
         }
 
         LocalDate date;
