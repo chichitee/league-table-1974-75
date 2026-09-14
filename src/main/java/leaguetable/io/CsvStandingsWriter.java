@@ -14,13 +14,17 @@ import java.util.Locale;
  * lost, goals for, goals against, goal average, points.
  */
 public final class CsvStandingsWriter {
-    // The CSV header line, with the column names in the conventional order.
 
+    /** The CSV header line, with the column names in the conventional order. */
     private static final String HEADER =
             "Position,Team,Played,Won,Drawn,Lost,GoalsFor,GoalsAgainst,GoalAverage,Points";
 
+    /**
+     * Writes the league table to the given Writer in CSV format, including a header line.
+     *
+     * @throws UncheckedIOException if an I/O error occurs while writing
+     */
     public void write(List<TeamStanding> table, Writer writer) {
-        // Writes the league table to the given Writer in CSV format, including a header line.
         try {
             writer.write(HEADER);
             writer.write(System.lineSeparator());
@@ -37,8 +41,8 @@ public final class CsvStandingsWriter {
         }
     }
 
+    /** Formats a single row of the league table as a CSV line, escaping the team name if necessary. */
     private String formatRow(int position, TeamStanding s) {
-        // Formats a single row of the league table as a CSV line, escaping the team name if necessary.
         return String.format("%d,%s,%d,%d,%d,%d,%d,%d,%s,%d",
                 position,
                 csvEscape(s.team()),
@@ -52,16 +56,16 @@ public final class CsvStandingsWriter {
                 s.points());
     }
 
+    /** Formats the goal average to three decimal places, or "Inf" if it's infinite. */
     private String formatGoalAverage(double goalAverage) {
-        // Formats the goal average to three decimal places, or returns "Inf" if the value is infinite (e.g., when goals against is zero).
         if (Double.isInfinite(goalAverage)) {
             return "Inf";
         }
         return String.format(Locale.ROOT, "%.3f", goalAverage);
     }
 
+    /** Quotes {@code value} for CSV if it contains a comma, quote, or newline; doubles any embedded quotes. */
     private String csvEscape(String value) {
-        // Escapes a string for CSV output. If the value contains a comma, double quote, or newline, it is enclosed in double quotes and any double quotes are escaped by doubling them.
         if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
