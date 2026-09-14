@@ -21,6 +21,7 @@ public final class TeamStanding {
     private final int goalsAgainst;
     private final int points;
 
+    /** Package-private full-state constructor; use {@link #unplayed(String)} to start a standing. */
     private TeamStanding(String team, int played, int won, int drawn, int lost,
                           int goalsFor, int goalsAgainst, int points) {
         this.team = team;
@@ -38,13 +39,7 @@ public final class TeamStanding {
         return new TeamStanding(Objects.requireNonNull(team), 0, 0, 0, 0, 0, 0, 0);
     }
 
-    /**
-     * Returns a new standing with one more match folded in.
-     *
-     * @param goalsFor     goals this team scored in the match
-     * @param goalsAgainst goals this team conceded in the match
-     * @param pointsEarned points earned for the result (from the scoring rules)
-     */
+    /** Returns a new standing with one more match's goals/points folded in. */
     public TeamStanding withResult(int goalsFor, int goalsAgainst, int pointsEarned) {
         int newWon = won;
         int newDrawn = drawn;
@@ -67,55 +62,49 @@ public final class TeamStanding {
                 points + pointsEarned);
     }
 
-    /** The name of the team. */
+    /** The team's name, exactly as first seen in the input data. */
     public String team() {
         return team;
     }
 
-    /** The number of matches played. */
+    /** Number of matches played so far. */
     public int played() {
         return played;
     }
 
-    /** The number of matches won. */
+    /** Number of matches won so far. */
     public int won() {
         return won;
     }
 
-    /** The number of matches drawn. */
+    /** Number of matches drawn so far. */
     public int drawn() {
         return drawn;
     }
 
-    /** The number of matches lost. */
+    /** Number of matches lost so far. */
     public int lost() {
         return lost;
     }
 
-    /** The number of goals scored by the team. */
+    /** Total goals scored so far. */
     public int goalsFor() {
         return goalsFor;
     }
 
-    /** The number of goals conceded by the team. */
+    /** Total goals conceded so far. */
     public int goalsAgainst() {
         return goalsAgainst;
     }
 
-    /** The number of points earned by the team. */
+    /** Total points earned so far, under whichever {@code ScoringRules} built this standing. */
     public int points() {
         return points;
     }
 
     /**
-     * Goal average (goals scored / goals conceded), the tie-break statistic
-     * used by the English Football League before goal difference was
-     * introduced in 1976/77.
-     *
-     * <p>A team that has conceded no goals but scored at least one has an
-     * undefined (infinite) ratio; by convention this ranks above every finite
-     * average. A team with 0 for and 0 against (no goals at all) is treated
-     * as a neutral 0.0 average.
+     * Goal average (goals scored / conceded) — the pre-1976/77 tie-break
+     * statistic. Goals with none conceded is treated as infinite; 0-0 is 0.0.
      */
     public double goalAverage() {
         if (goalsAgainst == 0) {
@@ -124,7 +113,29 @@ public final class TeamStanding {
         return (double) goalsFor / goalsAgainst;
     }
 
-    /** e.g. {@code "Leeds United [P10 W9 D1 L0 GF26 GA6 Pts19]"}. */
+    /** Equal when team, played/won/drawn/lost, goals, and points all match. */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TeamStanding)) return false;
+        TeamStanding that = (TeamStanding) o;
+        return played == that.played
+                && won == that.won
+                && drawn == that.drawn
+                && lost == that.lost
+                && goalsFor == that.goalsFor
+                && goalsAgainst == that.goalsAgainst
+                && points == that.points
+                && team.equals(that.team);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(team, played, won, drawn, lost, goalsFor, goalsAgainst, points);
+    }
+
+    /** A short human-readable form, e.g. {@code "Leeds United [P10 W9 D1 L0 GF26 GA6 Pts19]"}. */
     @Override
     public String toString() {
         return String.format("%s [P%d W%d D%d L%d GF%d GA%d Pts%d]",
