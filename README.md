@@ -50,8 +50,6 @@ cleanly even on an older JDK 11 — `pom.xml` pins `maven.compiler.release` to
 
 ```bash
 ./mvnw test               # run the test suite (mvnw.cmd on Windows)
-<img width="960" height="726" alt="image" src="https://github.com/user-attachments/assets/d6cb298e-731e-4b16-8a9c-d7d15e5a5aed" />
-
 ./mvnw package             # build target/league-table.jar
 ```
 
