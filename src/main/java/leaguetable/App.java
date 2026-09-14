@@ -84,6 +84,7 @@ public final class App {
     }
 
     private static Reader openReader(Path inputPath, java.io.InputStream stdin) throws IOException {
+        // If no input path is provided, read from stdin; otherwise, read from the specified file.
         if (inputPath == null) {
             return new InputStreamReader(stdin, StandardCharsets.UTF_8);
         }
@@ -91,6 +92,7 @@ public final class App {
     }
 
     private static Writer openWriter(Path outputPath, java.io.PrintStream stdout) throws IOException {
+        // If no output path is provided, write to stdout; otherwise, write to the specified file.
         if (outputPath == null) {
             return new OutputStreamWriter(stdout, StandardCharsets.UTF_8);
         }
@@ -98,6 +100,7 @@ public final class App {
     }
 
     private static void printUsage(java.io.PrintStream out) {
+        // Print usage instructions to the provided PrintStream.
         out.println("Usage: league-table [input.csv] [output.csv]");
         out.println("  No arguments:        read match results CSV from stdin, write table CSV to stdout");
         out.println("  One argument:        read match results CSV from the given file, write table CSV to stdout");

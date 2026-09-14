@@ -37,8 +37,8 @@ public interface ScoringRules {
         };
     }
 
-    /** The modern (post-1981) three-points-for-a-win rule, kept for completeness/tests. */
     static ScoringRules threePointsForWin() {
+        // The modern (post-1981) three-points-for-a-win rule, kept for completeness/tests.
         return new ScoringRules() {
             @Override
             public int pointsForWin() {
